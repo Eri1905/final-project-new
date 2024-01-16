@@ -1,2 +1,7 @@
-package PACKAGE_NAME;public enum OrderStatus {
+public enum OrderStatus {
+    TAKEN,
+    PREPARING,
+    READY,
+    SERVED,
+    PAID;
 }

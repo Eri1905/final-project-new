@@ -1,2 +1,9 @@
-package PACKAGE_NAME;public class Restaurant {
+public class Restaurant {
+    String name;
+    String address;
+    Staff[]staff;
+    Tables[]tables;
+
+
+
 }

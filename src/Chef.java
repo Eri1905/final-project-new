@@ -1,2 +1,3 @@
-package PACKAGE_NAME;public class Chef {
+public class Chef extends Staff{
+    public Order orderCooking;
 }

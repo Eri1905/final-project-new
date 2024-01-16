@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class Food {
+public abstract class Food extends MenuItems{
+    public Food(String name, double price) {
+        super(name, price);
+    }
 }

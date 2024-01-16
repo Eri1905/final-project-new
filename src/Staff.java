@@ -1,2 +1,3 @@
-package PACKAGE_NAME;public class Staff {
+public abstract class Staff {
+    String name;
 }

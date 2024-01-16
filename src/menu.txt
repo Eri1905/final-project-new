@@ -1,0 +1,16 @@
+Tarator,3.0,starters
+Chicken soup,4.0,starters
+Burger , 8.5 ,main
+Kebapche , 2.0 ,main
+Meatballs , 1.5 ,main
+Pizza , 10.0,main
+Juice , 2.5 ,drinks
+Coke , 3.0 ,drinks
+Ayran , 2.0 ,drinks
+Water , 1.0,drinks
+Beer , 4.0 ,drinks
+Rakija , 3.0,drinks
+Whisky , 5.0 ,drinks
+Tea , 2.0 ,drinks
+salad ,7.0,starters
+hotdog ,2.5,main
