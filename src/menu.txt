@@ -14,3 +14,5 @@ Whisky , 5.0 ,drinks
 Tea , 2.0 ,drinks
 salad ,7.0,starters
 hotdog ,2.5,main
+Brownie ,3.5,desserts
+cake ,4.0,desserts

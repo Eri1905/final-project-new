@@ -9,57 +9,46 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Waitress extends Staff {
-    ArrayList<Tables> tablesWorking;
-    Menu menu;
-    Order order;
+    private ArrayList<Tables> tablesWorking;
+    private Menu menu;
+    private Order order;
     public Path path = Paths.get("src/activeOrders.txt");
 
+
     public Waitress() {
-        this.tablesWorking = createTables();
+
     }
 
-    private ArrayList<Tables> createTables() {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter tables: ");
-        int tableNum = sc.nextInt();
-        this.tablesWorking = new ArrayList<>();
 
-        for (int i = 0; i < tableNum; i++) {
-            Tables table = new Tables(i + 1, false);
-            tablesWorking.add(table);
-        }
-        return tablesWorking;
-    }
-
-    public void work(Menu menu) {
+    public void work(Menu menu, ArrayList<Tables> tables) {
         while (true) {
             Scanner sc = new Scanner(System.in);
             System.out.println("Enter what do you want do ");
             System.out.println("1) Check for free table and get a order");
-            System.out.println("2) add to menu");
-            System.out.println("3) add to order");
-            System.out.println("4) remove from order");
-            System.out.println("5) calculate sum of table");
-            System.out.println("-1) Stop program");
+            System.out.println("2) Add to menu");
+            System.out.println("3) Add to order");
+            System.out.println("4) Remove from order");
+            System.out.println("5) Calculate sum of table");
+            System.out.println("-1) Leave");
             System.out.print("Enter: ");
             int answer = sc.nextInt();
 
 
             switch (answer) {
                 case 1:
-                    checkForFreeTable(tablesWorking, menu);
+                    checkForFreeTable(tables, menu);
                     break;
                 case 2:
                     menu.writeAddedDishToFile();
                     break;
                 case 3:
-                    addToOrder(tablesWorking, menu);
+                    addToOrder(tables, menu);
                     break;
                 case 4:
-                    removeFromOrder(tablesWorking);
+                    removeFromOrder(tables);
                     break;
                 case 5:
-                    calculateSumOfTable(tablesWorking);
+                    calculateSumOfTable(tables);
                     break;
                 case -1:
                     break;
@@ -76,7 +65,7 @@ public class Waitress extends Staff {
         Scanner sc = new Scanner(System.in);
 
         for (int i = 0; i < tables.size(); i++) {
-            if (tables.get(i).isTableTaken == true) {
+            if (tables.get(i).isTableTaken() == true) {
                 takenTables += 1;
             }
         }
@@ -88,7 +77,7 @@ public class Waitress extends Staff {
         } else {
             System.out.println("Free tables are: ");
             for (int i = 0; i < tables.size(); i++) {
-                if (tables.get(i).isTableTaken == false)
+                if (tables.get(i).isTableTaken() == false)
                     System.out.println("Table " + (i + 1));
             }
         }
@@ -96,7 +85,7 @@ public class Waitress extends Staff {
         System.out.println("Enter the number of the table: ");
         while (true) {
             currentTableNumber = sc.nextInt();
-            if (tables.get(currentTableNumber - 1).isTableTaken == true) {
+            if (tables.get(currentTableNumber - 1).isTableTaken() == true) {
                 System.out.println(" Please enter the number of free table: ");
             } else {
                 break;
@@ -114,33 +103,34 @@ public class Waitress extends Staff {
         System.out.println("Which table Total to sum: ");
 
         for (int i = 0; i < tables.size(); i++) {
-            if (tables.get(i).isTableTaken == true) {
+            if (tables.get(i).isTableTaken() == true) {
                 System.out.println("Table " + (i + 1));
             }
         }
         System.out.print("Enter: ");
         tableNum = sc.nextInt();
 
-        for (int i = 0; i < tables.get(tableNum - 1).order.orderItems.size(); i++) {
-            sumOfTable += tables.get(tableNum - 1).order.orderItems.get(i).price;
+        for (int i = 0; i < tables.get(tableNum - 1).getOrder().orderItems.size(); i++) {
+            sumOfTable += tables.get(tableNum - 1).getOrder().orderItems.get(i).price;
         }
 
         System.out.println("Table " + tableNum + " TOTAL: " + sumOfTable);
 
         int lineOfTable = findLineInFile(tables.get(tableNum - 1));
-        int lastDishLine =(tables.get(tableNum-1).order.orderItems.size())+lineOfTable;
+        int lastDishLine = (tables.get(tableNum - 1).getOrder().orderItems.size()) + lineOfTable;
 
-        removeTableFromFile(lineOfTable-1, lastDishLine);
+        removeTableFromFile(lineOfTable - 1, lastDishLine);
 
-        tables.get(tableNum - 1).order.orderItems.clear();
-        tables.get(tableNum - 1).isTableTaken = false;
+        tables.get(tableNum - 1).getOrder().orderItems.clear();
+        tables.get(tableNum - 1).setTableTaken(false);
+        tables.get(tableNum - 1).getOrder().setOrderStatus(OrderStatus.PAID);
     }
 
     public void takeOrder(Tables table, Menu menu) {
         Scanner sc = new Scanner(System.in);
         try {
             System.out.println("The date and time is(dd-MM-yyyy HH:mm:ss): ");
-            table.order.setCreationDateTimeFromString(sc.nextLine());
+            table.getOrder().setCreationDateTimeFromString(sc.nextLine());
 
             int answer;
 
@@ -155,10 +145,10 @@ public class Waitress extends Staff {
                 if (answer == -1) {
                     break;
                 }
-                table.order.orderItems.add(menu.menuItems.get(answer - 1));
+                table.getOrder().orderItems.add(menu.menuItems.get(answer - 1));
             }
             writeToFileTheOrder(table);
-            table.isTableTaken = true;
+            table.setTableTaken(true);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -170,7 +160,7 @@ public class Waitress extends Staff {
         int tableNum;
         System.out.println("In which table to add: ");
         for (int i = 0; i < tables.size(); i++) {
-            if (tables.get(i).isTableTaken == true) {
+            if (tables.get(i).isTableTaken() == true) {
                 System.out.println("Table " + (i + 1));
             }
         }
@@ -182,14 +172,14 @@ public class Waitress extends Staff {
             System.out.println((i + 1) + ") " + menu.menuItems.get(i).name + ", price: " + menu.menuItems.get(i).price);
         }
         System.out.println();
-        System.out.println("Enter number of product(if your order is finished write '0'): ");
+        System.out.println("Enter number of product(if your order is finished write '-1'): ");
         while (true) {
 
             answer = sc.nextInt();
-            if (answer == 0) {
+            if (answer == -1) {
                 break;
             }
-            tables.get(tableNum - 1).order.orderItems.add(menu.menuItems.get(answer - 1));
+            tables.get(tableNum - 1).getOrder().orderItems.add(menu.menuItems.get(answer - 1));
             writeAddedDish(tables.get(tableNum - 1));
         }
     }
@@ -200,7 +190,7 @@ public class Waitress extends Staff {
         int tableNum;
         System.out.println("In which table to remove: ");
         for (int i = 0; i < tables.size(); i++) {
-            if (tables.get(i).isTableTaken == true) {
+            if (tables.get(i).isTableTaken() == true) {
                 System.out.println("Table " + (i + 1));
             }
         }
@@ -208,14 +198,14 @@ public class Waitress extends Staff {
         tableNum = sc.nextInt();
 
 
-        for (int i = 0; i < tables.get(tableNum - 1).order.orderItems.size(); i++) {
-            System.out.println(i + 1 + ") " + tables.get(tableNum - 1).order.orderItems.get(i).toString());
+        for (int i = 0; i < tables.get(tableNum - 1).getOrder().orderItems.size(); i++) {
+            System.out.println(i + 1 + ") " + tables.get(tableNum - 1).getOrder().orderItems.get(i).toString());
         }
         System.out.println();
         System.out.print("Enter which element to remove: ");
         int num = sc.nextInt();
 
-        tables.get(tableNum - 1).order.orderItems.remove(num - 1);
+        tables.get(tableNum - 1).getOrder().orderItems.remove(num - 1);
 
         int lineOfTable = findLineInFile(tables.get(tableNum - 1));
 
@@ -228,10 +218,8 @@ public class Waitress extends Staff {
             List<String> lines = Files.readAllLines(path);
 
             if (line >= 1 && line <= lines.size()) {
-                // Remove the specified line
                 lines.remove(line - 1);
 
-                // Write the updated content back to the file
                 Files.write(path, lines);
 
 
@@ -246,23 +234,20 @@ public class Waitress extends Staff {
     private void writeAddedDish(Tables table) {
         try {
 
-            String newContent = table.order.orderItems.get(table.order.orderItems.size() - 1).toString();
-            int size = (findLineInFile(table) + (table.order.orderItems.size())) - 1;
+            String newContent = table.getOrder().orderItems.get(table.getOrder().orderItems.size() - 1).toString();
+            int size = (findLineInFile(table) + (table.getOrder().orderItems.size())) - 1;
 
             List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
 
             if (lines.size() >= size) {
-                // Add text to the specified line
                 lines.add(size, newContent);
             } else {
-                // Append new lines until reaching the specified line number
                 while (lines.size() < size + 1) {
                     lines.add("");
                     lines.add(newContent);
                 }
             }
 
-            // Write the modified content back to the file
             Files.write(path, lines, StandardCharsets.UTF_8);
 
         } catch (Exception e) {
@@ -271,7 +256,7 @@ public class Waitress extends Staff {
     }
 
     private int findLineInFile(Tables table) {
-        String searchText = "Table " + table.tableNum;
+        String searchText = "Table " + table.getTableNum();
 
         int lineNumber = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
@@ -307,25 +292,22 @@ public class Waitress extends Staff {
 
             bufferedWriter.close();
 
-            // System.out.println("You added new dish to the menu!");
+            table.getOrder().setOrderStatus(OrderStatus.SERVED);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     private void removeTableFromFile(int firstline, int lastLine) {
         try {
-            // Read all lines from the file
             List<String> lines = Files.readAllLines(path);
 
-            // Check if the range is valid
             if (firstline >= 1 && firstline <= lines.size() &&
                     lastLine >= 1 && lastLine <= lines.size() && lastLine >= firstline) {
 
-                // Remove the specified range of lines
                 lines.subList(firstline - 1, lastLine).clear();
 
-                // Write the updated content back to the file
                 Files.write(path, lines);
             }
         } catch (IOException e) {

@@ -5,9 +5,12 @@ import java.util.ArrayList;
 public class Order {
     public LocalDateTime creationDateTime;
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-    ArrayList<MenuItems> orderItems;
-    double total;
-    OrderStatus orderStatus;
+    public ArrayList<MenuItems> orderItems;
+    private OrderStatus orderStatus;
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 
     public void setCreationDateTimeFromString(String dateTimeString) {
         this.creationDateTime = LocalDateTime.parse(dateTimeString, formatter);
